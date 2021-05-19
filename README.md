@@ -19,10 +19,11 @@ Number of [dart throwing](https://www.youtube.com/watch?v=6nhgLmzjgXM): 5_000_00
 
 ## Implementations
 
-We're using three implementations of the algorithm:
+We're using four implementations of the algorithm:
 - [x] [Python](https://www.python.org/) version in [/python](/python).
 - [x] [Rust](https://www.rust-lang.org/) version in [/rust](/rust).
-- [ ] [Python calling Rust with cffi](https://bheisler.github.io/post/calling-rust-in-python/) version in [/hybrid](/hybrid).
+- [x] [Python calling Rust with cffi](https://bheisler.github.io/post/calling-rust-in-python/) version in [/hybrid](/hybrid).
+- [ ] [Python calling Rust with wasm] version in [/hybrid-wasm](/hybrid-wasm).
 
 We're using the [hyperfine](https://github.com/sharkdp/hyperfine) benchmark tool.
 
@@ -46,13 +47,7 @@ Commando:
 hyperfine -w 2 -m 10 'python python/pi-monte-carlo.py'
 ```
 
-Result with sqrt:
-```
-Benchmark #1: python python/pi-monte-carlo.py
-  Time (mean ± σ):      5.666 s ±  0.068 s    [User: 5.516 s, System: 0.111 s]
-  Range (min … max):    5.584 s …  5.785 s    10 runs
-```
-Result without sqrt:
+Result (Ran on my macbook pro):
 ```
 Benchmark #1: python python/pi-monte-carlo.py
   Time (mean ± σ):      5.183 s ±  0.081 s    [User: 5.042 s, System: 0.105 s]
@@ -75,10 +70,34 @@ cargo build --release --manifest-path rust/pi-monte-carlo/Cargo.toml
 hyperfine -w 2 -m 10 './rust/pi-monte-carlo/target/release/pi-monte-carlo'
 ```
 
-Result without sqrt:
+Result (Ran on my macbook pro):
 ```
 Benchmark #1: ./rust/pi-monte-carlo/target/release/pi-monte-carlo
   Time (mean ± σ):      78.7 ms ±   4.5 ms    [User: 71.6 ms, System: 4.3 ms]
   Range (min … max):    73.3 ms …  92.7 ms    35 runs
 ```
+
+## Hybrid
+
+### Execute
+
+```bash
+cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
+python hybrid/pi-monte-carlo.py
+```
+
+### Benchmark
+
+Commando:
+``` bash
+cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
+hyperfine -w 2 -m 10 'python hybrid/pi-monte-carlo.py'
+```
+
+Result (Ran on my macbook pro):
+```
+Benchmark #1: python hybrid/pi-monte-carlo.py
+  Time (mean ± σ):     300.6 ms ±   9.7 ms    [User: 170.2 ms, System: 109.2 ms]
+  Range (min … max):   289.1 ms … 314.5 ms    10 runs
+
 
