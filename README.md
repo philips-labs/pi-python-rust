@@ -23,7 +23,7 @@ We're using four implementations of the algorithm:
 - [x] [Python](https://www.python.org/) version in [/python](/python).
 - [x] [Rust](https://www.rust-lang.org/) version in [/rust](/rust).
 - [x] [Python calling Rust with cffi](https://bheisler.github.io/post/calling-rust-in-python/) version in [/hybrid](/hybrid).
-- [ ] [Python calling Rust with wasm] version in [/hybrid-wasm](/hybrid-wasm).
+- [ ] [Python calling Rust with wasm] version in [/wasm](/wasm).
 
 We're using the [hyperfine](https://github.com/sharkdp/hyperfine) benchmark tool.
 
@@ -33,6 +33,8 @@ brew install hyperfine
 
 
 ## Python
+
+Run pi-monte-carlo algorithm in pure Python!
 
 ### Execute
 
@@ -55,6 +57,8 @@ Benchmark #1: python python/pi-monte-carlo.py
 ```
 
 ## Rust
+
+Run pi-monte-carlo algorithm in pure Rust!
 
 ### Execute
 
@@ -79,6 +83,8 @@ Benchmark #1: ./rust/pi-monte-carlo/target/release/pi-monte-carlo
 
 ## Hybrid
 
+Use FFI to call the Rust monte-carlo-pi loop from Python.
+
 ### Execute
 
 ```bash
@@ -99,5 +105,47 @@ Result (Ran on my macbook pro):
 Benchmark #1: python hybrid/pi-monte-carlo.py
   Time (mean ± σ):     300.6 ms ±   9.7 ms    [User: 170.2 ms, System: 109.2 ms]
   Range (min … max):   289.1 ms … 314.5 ms    10 runs
+```
+
+### Advantage
+
+Fast
+
+### Disadvantage
+
+Target specific libs. For each OS you have a different binary. For mac for a `.dylib` file. For windows a `.dll`.
+
+## WASM/WASI
+
+Using WASM/WASI to call the Rust monte-carlo-pi loop from Python.
+
+### Execute
+
+```bash
+cargo build --target wasm32-wasi --release --manifest-path wasm/pi-monte-carlo/Cargo.toml
+ln -s wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm/pi_monte_carlo.wasm
+python wasm/pi-monte-carlo.py'
+```
+
+### Benchmark
+
+Commando:
+``` bash
+cargo build --target wasm32-wasi --release --manifest-path wasm/pi-monte-carlo/Cargo.toml
+ln -s wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm
+hyperfine -w 2 -m 10 'python wasm/pi-monte-carlo.py'
+```
+
+Result (Ran on my macbook pro):
+```
+```
+
+### Advantage
+
+Fast, and no platform specific binaries.
+
+### Disadvantage
+
+
 
 
