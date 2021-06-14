@@ -137,6 +137,7 @@ Using WASM/WASI to call the Rust monte-carlo-pi loop from Python.
   ```bash
   cargo build --target wasm32-wasi --release --manifest-path wasm/pi-monte-carlo/Cargo.toml
   ln -s wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm/pi_monte_carlo.wasm
+  wasm-gc wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm
   python wasm/pi-monte-carlo.py
   ```
 
