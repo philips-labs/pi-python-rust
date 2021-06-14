@@ -2,7 +2,7 @@
 
 ## Purpose of this repository
 
-We want to show how you can improve performance of your application by using WASM. 
+We want to show how you can improve performance of your application by using WASM/WASI. 
 To show this, we're using an [estimation](https://www.youtube.com/watch?v=MhbT7EvYN0c) algorithm to calculate pi.
 
 By implementing this in different languages and benchmarking it, we can see if you can achieve some speed improvements.
@@ -23,7 +23,7 @@ We're using four implementations of the algorithm:
 - [x] [Python](https://www.python.org/) version in [/python](/python).
 - [x] [Rust](https://www.rust-lang.org/) version in [/rust](/rust).
 - [x] [Python calling Rust with cffi](https://bheisler.github.io/post/calling-rust-in-python/) version in [/hybrid](/hybrid).
-- [ ] [Python calling Rust with wasm] version in [/hybrid-wasm](/hybrid-wasm).
+- [x] Python calling Rust with [WASM/WASI](https://wasi.dev/) version in [/wasm](/wasm).
 
 We're using the [hyperfine](https://github.com/sharkdp/hyperfine) benchmark tool.
 
@@ -31,73 +31,137 @@ We're using the [hyperfine](https://github.com/sharkdp/hyperfine) benchmark tool
 brew install hyperfine
 ```
 
-
 ## Python
 
-### Execute
+Run pi-monte-carlo algorithm in pure Python!
+<details>
+  <summary>Click to expand!</summary>
 
-```bash
-python python/pi-monte-carlo.py
-```
+  ### Execute
 
-### Benchmark
+  ```bash
+  python python/pi-monte-carlo.py
+  ```
 
-Commando:
-``` bash
-hyperfine -w 2 -m 10 'python python/pi-monte-carlo.py'
-```
+  ### Benchmark
 
-Result (Ran on my macbook pro):
-```
-Benchmark #1: python python/pi-monte-carlo.py
-  Time (mean ± σ):      5.183 s ±  0.081 s    [User: 5.042 s, System: 0.105 s]
-  Range (min … max):    5.091 s …  5.337 s    10 runs
-```
+  Commando:
+  ``` bash
+  hyperfine -w 2 -m 10 'python python/pi-monte-carlo.py'
+  ```
+
+  Result (Ran on my macbook pro):
+  ```
+  Benchmark #1: python python/pi-monte-carlo.py
+    Time (mean ± σ):      5.183 s ±  0.081 s    [User: 5.042 s, System: 0.105 s]
+    Range (min … max):    5.091 s …  5.337 s    10 runs
+  ```
+</details>
 
 ## Rust
 
-### Execute
+Run pi-monte-carlo algorithm in pure Rust!
 
-```bash
-cargo run --manifest-path rust/pi-monte-carlo/Cargo.toml
-```
+<details>
+  <summary>Click to expand!</summary>
 
-### Benchmark
+   ### Execute
 
-Commando:
-``` bash
-cargo build --release --manifest-path rust/pi-monte-carlo/Cargo.toml
-hyperfine -w 2 -m 10 './rust/pi-monte-carlo/target/release/pi-monte-carlo'
-```
+  ```bash
+  cargo run --manifest-path rust/pi-monte-carlo/Cargo.toml
+  ```
 
-Result (Ran on my macbook pro):
-```
-Benchmark #1: ./rust/pi-monte-carlo/target/release/pi-monte-carlo
-  Time (mean ± σ):      78.7 ms ±   4.5 ms    [User: 71.6 ms, System: 4.3 ms]
-  Range (min … max):    73.3 ms …  92.7 ms    35 runs
-```
+  ### Benchmark
+
+  Commando:
+  ``` bash
+  cargo build --release --manifest-path rust/pi-monte-carlo/Cargo.toml
+  hyperfine -w 2 -m 10 './rust/pi-monte-carlo/target/release/pi-monte-carlo'
+  ```
+
+  Result (Ran on my macbook pro):
+  ```
+  Benchmark #1: ./rust/pi-monte-carlo/target/release/pi-monte-carlo
+    Time (mean ± σ):      78.7 ms ±   4.5 ms    [User: 71.6 ms, System: 4.3 ms]
+    Range (min … max):    73.3 ms …  92.7 ms    35 runs
+  ```
+</details>
 
 ## Hybrid
 
-### Execute
+Use FFI to call the Rust monte-carlo-pi loop from Python.
 
-```bash
-cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
-python hybrid/pi-monte-carlo.py
-```
+<details>
+  <summary>Click to expand!</summary>
 
-### Benchmark
+  ### Execute
 
-Commando:
-``` bash
-cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
-hyperfine -w 2 -m 10 'python hybrid/pi-monte-carlo.py'
-```
+  ```bash
+  cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
+  python hybrid/pi-monte-carlo.py
+  ```
 
-Result (Ran on my macbook pro):
-```
-Benchmark #1: python hybrid/pi-monte-carlo.py
-  Time (mean ± σ):     300.6 ms ±   9.7 ms    [User: 170.2 ms, System: 109.2 ms]
-  Range (min … max):   289.1 ms … 314.5 ms    10 runs
+  ### Benchmark
+
+  Commando:
+  ``` bash
+  cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
+  hyperfine -w 2 -m 10 'python hybrid/pi-monte-carlo.py'
+  ```
+
+  Result (Ran on my macbook pro):
+  ```
+  Benchmark #1: python hybrid/pi-monte-carlo.py
+    Time (mean ± σ):     300.6 ms ±   9.7 ms    [User: 170.2 ms, System: 109.2 ms]
+    Range (min … max):   289.1 ms … 314.5 ms    10 runs
+  ```
+
+  ### Advantage
+
+  Fast
+
+  ### Disadvantage
+
+  Target specific libs. For each OS you have a different binary. For mac for a `.dylib` file. For windows a `.dll`.
+</details>
+
+## WASM/WASI
+
+Using WASM/WASI to call the Rust monte-carlo-pi loop from Python.
+
+<details>
+  <summary>Click to expand!</summary>
+
+  ### Execute
+
+  ```bash
+  cargo build --target wasm32-wasi --release --manifest-path wasm/pi-monte-carlo/Cargo.toml
+  ln -s wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm/pi_monte_carlo.wasm
+  python wasm/pi-monte-carlo.py'
+  ```
+
+  ### Benchmark
+
+  Commando:
+  ``` bash
+  cargo build --target wasm32-wasi --release --manifest-path wasm/pi-monte-carlo/Cargo.toml
+  ln -s wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm
+  hyperfine -w 2 -m 10 'python wasm/pi-monte-carlo.py'
+  ```
+
+  Result (Ran on my macbook pro):
+  ```
+  ```
+
+  ### Advantage
+
+  - Fast.
+  - No platform specific binaries.
+  - Sandboxed environment.
+  - Can be called from almost any language / platform.
+
+  ### Disadvantage
+</details>
+
 
 
