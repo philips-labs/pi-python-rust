@@ -198,8 +198,8 @@ Result (Ran on my macbook pro):
 
 ```shell
 Benchmark #1: ./pi-monte-carlo
-  Time (mean ± σ):      49.4 ms ±   4.6 ms    [User: 47.2 ms, System: 1.1 ms]
-  Range (min … max):    44.6 ms …  66.9 ms    51 runs
+  Time (mean ± σ):      51.8 ms ±   0.9 ms    [User: 47.9 ms, System: 2.8 ms]
+  Range (min … max):    50.7 ms …  55.1 ms    50 runs
 ```
 
 ### Advantage
