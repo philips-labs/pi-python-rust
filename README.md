@@ -53,8 +53,8 @@ Run pi-monte-carlo algorithm in pure Python!
   Result (Ran on my macbook pro):
   ```
   Benchmark #1: python python/pi-monte-carlo.py
-    Time (mean ± σ):      4.007 s ±  0.031 s    [User: 3.887 s, System: 0.094 s]
-    Range (min … max):    3.954 s …  4.044 s    10 runs
+    Time (mean ± σ):      3.184 s ±  0.072 s    [User: 3.083 s, System: 0.077 s]
+    Range (min … max):    3.090 s …  3.314 s    10 runs
   ```
 </details>
 
@@ -82,8 +82,8 @@ Run pi-monte-carlo algorithm in pure Rust!
   Result (Ran on my macbook pro):
   ```
   Benchmark #1: ./rust/pi-monte-carlo/target/release/pi-monte-carlo
-    Time (mean ± σ):      73.9 ms ±   1.0 ms    [User: 68.3 ms, System: 3.5 ms]
-    Range (min … max):    72.2 ms …  76.2 ms    36 runs
+    Time (mean ± σ):      64.6 ms ±   1.5 ms    [User: 60.4 ms, System: 2.7 ms]
+    Range (min … max):    63.4 ms …  72.3 ms    41 runs
   ```
 </details>
 
@@ -97,6 +97,7 @@ Use FFI to call the Rust monte-carlo-pi loop from Python.
   ### Execute
 
   ```bash
+  pip install cffi
   cargo build --release --manifest-path hybrid/pi-monte-carlo/Cargo.toml
   python hybrid/pi-monte-carlo.py
   ```
@@ -112,8 +113,8 @@ Use FFI to call the Rust monte-carlo-pi loop from Python.
   Result (Ran on my macbook pro):
   ```
   Benchmark #1: python hybrid/pi-monte-carlo.py
-    Time (mean ± σ):     296.6 ms ±   5.4 ms    [User: 169.2 ms, System: 107.0 ms]
-    Range (min … max):   289.5 ms … 304.7 ms    10 runs
+    Time (mean ± σ):     226.1 ms ±   1.7 ms    [User: 139.4 ms, System: 81.8 ms]
+    Range (min … max):   222.5 ms … 229.2 ms    12 runs
   ```
 
   ### Advantage
@@ -135,8 +136,11 @@ Using WASM/WASI to call the Rust monte-carlo-pi loop from Python.
   ### Execute
 
   ```bash
+  cargo install wasm-gc
+  pip install wasmtime
+  
   cargo build --target wasm32-wasi --release --manifest-path wasm/pi-monte-carlo/Cargo.toml
-  ln -s wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm/pi_monte_carlo.wasm
+  ln -s pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm wasm/pi_monte_carlo.wasm
   wasm-gc wasm/pi-monte-carlo/target/wasm32-wasi/release/pi_monte_carlo.wasm
   python wasm/pi-monte-carlo.py
   ```
@@ -153,8 +157,8 @@ Using WASM/WASI to call the Rust monte-carlo-pi loop from Python.
   Result (Ran on my macbook pro):
   ```
   Benchmark #1: python wasm/pi-monte-carlo.py
-    Time (mean ± σ):      2.056 s ±  0.060 s    [User: 1.917 s, System: 0.111 s]
-    Range (min … max):    1.991 s …  2.180 s    10 runs
+    Time (mean ± σ):      1.551 s ±  0.069 s    [User: 1.454 s, System: 0.087 s]
+    Range (min … max):    1.479 s …  1.715 s    10 runs
   ```
 
   ### Advantage
