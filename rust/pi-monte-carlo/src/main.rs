@@ -5,7 +5,7 @@ fn montecarlo_pi(trials: u32) -> f64 {
     let mut hit: u32 = 0;
     let mut rng = rand::thread_rng();
 
-    for _i in 1..trials {
+    for _i in 0..trials {
         let x: f64 = rng.gen::<f64>();
         let y: f64 = rng.gen::<f64>();
 

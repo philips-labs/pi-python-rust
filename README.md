@@ -24,6 +24,7 @@ We're using four implementations of the algorithm:
 - [x] [Rust](https://www.rust-lang.org/) version in [/rust](/rust).
 - [x] [Python calling Rust with cffi](https://bheisler.github.io/post/calling-rust-in-python/) version in [/hybrid](/hybrid).
 - [x] Python calling Rust with [WASM/WASI](https://wasi.dev/) version in [/wasm](/wasm).
+- [x] [Go](https://golang.org) version in [/go](/go).
 
 We're using the [hyperfine](https://github.com/sharkdp/hyperfine) benchmark tool.
 
@@ -172,5 +173,46 @@ Using WASM/WASI to call the Rust monte-carlo-pi loop from Python.
 
 </details>
 
+## Go
 
+Run pi-monte-carlo algorithm in pure Go!
 
+<details>
+  <summary>Click to expand!</summary>
+
+### Build
+
+```bash
+go build .
+```
+
+### Execute
+
+```shell
+./pi-monte-carlo
+```
+
+### Benchmark
+
+```shell
+hyperfine -w 2 -m 10 ./pi-monte-carlo
+```
+
+Result (Ran on my macbook pro):
+
+```shell
+Benchmark #1: ./pi-monte-carlo
+  Time (mean ± σ):      51.8 ms ±   0.9 ms    [User: 47.9 ms, System: 2.8 ms]
+  Range (min … max):    50.7 ms …  55.1 ms    50 runs
+```
+
+### Advantage
+
+- Super fast (fastest benchmark from all experiments)
+- Imperitive easy to understand code
+
+### Disavantage
+
+- Has to be compiled for specific OS and target platform
+
+</details>
